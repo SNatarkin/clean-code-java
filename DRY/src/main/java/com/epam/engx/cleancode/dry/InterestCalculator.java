@@ -33,32 +33,25 @@ public class InterestCalculator implements Profitable {
         startCalendar.setTime(from);
         Calendar endCalendar = new GregorianCalendar();
         endCalendar.setTime(to);
-
         int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
-        if (endCalendar.get(Calendar.DAY_OF_YEAR) + LEAP_YEAR_SHIFT < startCalendar.get(Calendar.DAY_OF_YEAR))
-            return diffYear - 1;
-        return diffYear;
+        return getDifferentBetweenYearsWithCorrection(startCalendar, endCalendar, diffYear);
+    }
+
+    private int getDifferentBetweenYearsWithCorrection(Calendar startCalendar, Calendar endCalendar, int diffYear) {
+        return getDifferenceInYear(startCalendar, endCalendar) ? diffYear - 1 : diffYear;
+    }
+
+    private boolean getDifferenceInYear(Calendar startCalendar, Calendar endCalendar) {
+        return endCalendar.get(Calendar.DAY_OF_YEAR) + LEAP_YEAR_SHIFT < startCalendar.get(Calendar.DAY_OF_YEAR);
     }
 
     private BigDecimal interest(AccountDetails accountDetails) {
         return (AGE <= accountDetails.getAge()) ? getInterest(accountDetails, SENIOR_PERCENT) : getInterest(accountDetails, INTEREST_PERCENT);
     }
-    
+
     private BigDecimal getInterest(AccountDetails accountDetails, double interestPercent) {
         return BigDecimal.valueOf(accountDetails.getBalance().doubleValue()
-                * durationSinceStartDateInYears(accountDetails.getStartDate()) * interestPercent / 100);
-    }
-
-    private int durationSinceStartDateInYears(Date startDate) {
-        Calendar startCalendar = new GregorianCalendar();
-        startCalendar.setTime(startDate);
-        Calendar endCalendar = new GregorianCalendar();
-        endCalendar.setTime(new Date());
-
-        int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
-        if (endCalendar.get(Calendar.DAY_OF_YEAR) + LEAP_YEAR_SHIFT < startCalendar.get(Calendar.DAY_OF_YEAR))
-            return diffYear - 1;
-        return diffYear;
-
+                * durationBetweenDatesInYears(accountDetails.getStartDate(), new Date()) * interestPercent / 100);
     }
 }
+
