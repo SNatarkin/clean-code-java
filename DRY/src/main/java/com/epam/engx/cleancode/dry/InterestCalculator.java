@@ -41,18 +41,12 @@ public class InterestCalculator implements Profitable {
     }
 
     private BigDecimal interest(AccountDetails accountDetails) {
-        double interest = 0;
-        if (isAccountStartedAfterBonusAge(accountDetails)) {
-            if (AGE <= accountDetails.getAge()) {
-                //interest = (PrincipalAmount * DurationInYears * AnnualInterestRate) / 100
-                interest = accountDetails.getBalance().doubleValue()
-                        * durationSinceStartDateInYears(accountDetails.getStartDate()) * SENIOR_PERCENT / 100;
-            } else {
-                interest = accountDetails.getBalance().doubleValue()
-                        * durationSinceStartDateInYears(accountDetails.getStartDate()) * INTEREST_PERCENT / 100;
-            }
-        }
-        return BigDecimal.valueOf(interest);
+        return (AGE <= accountDetails.getAge()) ? getInterest(accountDetails, SENIOR_PERCENT) : getInterest(accountDetails, INTEREST_PERCENT);
+    }
+    
+    private BigDecimal getInterest(AccountDetails accountDetails, double interestPercent) {
+        return BigDecimal.valueOf(accountDetails.getBalance().doubleValue()
+                * durationSinceStartDateInYears(accountDetails.getStartDate()) * interestPercent / 100);
     }
 
     private int durationSinceStartDateInYears(Date startDate) {
