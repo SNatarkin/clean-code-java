@@ -13,6 +13,8 @@ public class RegisterAccountAction {
 
     private PasswordChecker passwordChecker;
     private AccountManager accountManager;
+    private static final int LENGTH_NAME =  5;
+    private static final int PASSWORD_LENGTH = 8;
 
     public void register(Account account) {
         verificationPasswordAndName(account);
@@ -23,11 +25,11 @@ public class RegisterAccountAction {
     }
 
     private void verificationPasswordAndName(Account account) {
-        if (account.getName().length() <= 5) {
+        if (account.getName().length() <= LENGTH_NAME) {
             throw new WrongAccountNameException();
         }
         String password = account.getPassword();
-        if (password.length() <= 8) {
+        if (password.length() <= PASSWORD_LENGTH) {
             throw new TooShortPasswordException();
         }
         if (passwordChecker.validate(password) != OK) {

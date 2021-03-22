@@ -14,6 +14,8 @@ public class InterestCalculator implements Profitable {
     private static final double SENIOR_PERCENT = 5.5d;
     private static final int BONUS_AGE = 13;
     private static final int LEAP_YEAR_SHIFT = 1;
+    private static final int CORRECTION_YEAR = 1;
+    private static final int PERCENT = 100;
 
 
     public BigDecimal calculateInterest(AccountDetails accountDetails) {
@@ -38,7 +40,7 @@ public class InterestCalculator implements Profitable {
     }
 
     private int getDifferentBetweenYearsWithCorrection(Calendar startCalendar, Calendar endCalendar, int diffYear) {
-        return getDifferenceInYear(startCalendar, endCalendar) ? diffYear - 1 : diffYear;
+        return getDifferenceInYear(startCalendar, endCalendar) ? diffYear - CORRECTION_YEAR : diffYear;
     }
 
     private boolean getDifferenceInYear(Calendar startCalendar, Calendar endCalendar) {
@@ -51,7 +53,7 @@ public class InterestCalculator implements Profitable {
 
     private BigDecimal getInterest(AccountDetails accountDetails, double interestPercent) {
         return BigDecimal.valueOf(accountDetails.getBalance().doubleValue()
-                * durationBetweenDatesInYears(accountDetails.getStartDate(), new Date()) * interestPercent / 100);
+                * durationBetweenDatesInYears(accountDetails.getStartDate(), new Date()) * interestPercent / PERCENT);
     }
 }
 
