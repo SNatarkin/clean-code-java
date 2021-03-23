@@ -17,23 +17,27 @@ public class RegisterAccountAction {
     private static final int PASSWORD_LENGTH = 8;
 
     public void register(Account account) {
-        verificationPasswordAndName(account);
+        verificationPassword(account);
+        verificationName(account);
         account.setCreatedDate(new Date());
         List<Address> addresses = Arrays.asList(account.getHomeAddress(), account.getWorkAddress(), account.getAdditionalAddress());
         account.setAddresses(addresses);
         accountManager.createNewAccount(account);
     }
 
-    private void verificationPasswordAndName(Account account) {
-        if (account.getName().length() <= LENGTH_NAME) {
-            throw new WrongAccountNameException();
-        }
+    private void verificationPassword(Account account) {
         String password = account.getPassword();
         if (password.length() <= PASSWORD_LENGTH) {
             throw new TooShortPasswordException();
         }
         if (passwordChecker.validate(password) != OK) {
             throw new WrongPasswordException();
+        }
+    }
+
+    private void verificationName(Account account) {
+        if (account.getName().length() <= LENGTH_NAME) {
+            throw new WrongAccountNameException();
         }
     }
 
