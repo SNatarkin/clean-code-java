@@ -18,6 +18,7 @@ public class RegisterAccountAction {
 
     public void register(Account account) {
         if (verificationPassword(account) && verificationName(account)) {
+            createAccount(account);
             accountManager.createNewAccount(account);
         }
     }
