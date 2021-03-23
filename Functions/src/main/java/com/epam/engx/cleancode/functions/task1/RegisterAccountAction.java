@@ -11,43 +11,52 @@ import static com.epam.engx.cleancode.functions.task1.thirdpartyjar.CheckStatus.
 public class RegisterAccountAction {
 
 
+    private static final int LENGTH_NAME = 5;
+    private static final int PASSWORD_LENGTH = 8;
     private PasswordChecker passwordChecker;
     private AccountManager accountManager;
-    private static final int LENGTH_NAME =  5;
-    private static final int PASSWORD_LENGTH = 8;
 
     public void register(Account account) {
-        verificationPassword(account);
-        verificationName(account);
-        account.setCreatedDate(new Date());
-        List<Address> addresses = Arrays.asList(account.getHomeAddress(), account.getWorkAddress(), account.getAdditionalAddress());
-        account.setAddresses(addresses);
-        accountManager.createNewAccount(account);
+        if (verificationPassword(account) && verificationName(account)) {
+            account.setCreatedDate(new Date());
+            account.setAddresses(createAddress(account));
+            accountManager.createNewAccount(account);
+        }
     }
 
-    private void verificationPassword(Account account) {
+    private List<Address> createAddress(Account account) {
+        return Arrays.asList(account.getHomeAddress(), account.getWorkAddress(), account.getAdditionalAddress());
+    }
+
+    private boolean verificationPassword(Account account) {
+        boolean isCorrect;
         String password = account.getPassword();
         if (password.length() <= PASSWORD_LENGTH) {
             throw new TooShortPasswordException();
         }
         if (passwordChecker.validate(password) != OK) {
             throw new WrongPasswordException();
+        } else {
+            isCorrect = true;
         }
+        return isCorrect;
     }
 
-    private void verificationName(Account account) {
+    private boolean verificationName(Account account) {
+        boolean isCorrect;
         if (account.getName().length() <= LENGTH_NAME) {
             throw new WrongAccountNameException();
+        } else {
+            isCorrect = true;
         }
+        return isCorrect;
     }
-
 
     public void setAccountManager(AccountManager accountManager) {
         this.accountManager = accountManager;
     }
 
     public void setPasswordChecker(PasswordChecker passwordChecker) {
-
         this.passwordChecker = passwordChecker;
     }
 

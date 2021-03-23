@@ -17,7 +17,6 @@ public class InterestCalculator implements Profitable {
     private static final int CORRECTION_YEAR = 1;
     private static final int PERCENT = 100;
 
-
     public BigDecimal calculateInterest(AccountDetails accountDetails) {
         if (isAccountStartedAfterBonusAge(accountDetails)) {
             return interest(accountDetails);
