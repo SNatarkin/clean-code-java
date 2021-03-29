@@ -17,13 +17,13 @@ public class RegisterAccountAction {
     private AccountManager accountManager;
 
     public void register(Account account) {
-        if (verificationPassword(account) && verificationName(account)) {
-            createAccount(account);
+        if (validateAccountPassword(account) && validateAccountName(account)) {
+            accountSetup(account);
             accountManager.createNewAccount(account);
         }
     }
 
-    private void createAccount(Account account) {
+    private void accountSetup(Account account) {
         account.setCreatedDate(new Date());
         account.setAddresses(createAddress(account));
     }
@@ -32,7 +32,7 @@ public class RegisterAccountAction {
         return Arrays.asList(account.getHomeAddress(), account.getWorkAddress(), account.getAdditionalAddress());
     }
 
-    private boolean verificationPassword(Account account) {
+    private boolean validateAccountPassword(Account account) {
         boolean isCorrect;
         String password = account.getPassword();
         if (password.length() <= PASSWORD_LENGTH) {
@@ -46,7 +46,7 @@ public class RegisterAccountAction {
         return isCorrect;
     }
 
-    private boolean verificationName(Account account) {
+    private boolean validateAccountName(Account account) {
         boolean isCorrect;
         if (account.getName().length() <= LENGTH_NAME) {
             throw new WrongAccountNameException();
