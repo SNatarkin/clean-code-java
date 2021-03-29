@@ -12,9 +12,9 @@ public class DeliveryOrderService implements IOrderService {
 
     private OrderFulfilmentService orderFulfilmentService;
 
-    public void submitOrder(Order productsOrder) {
-        if (deliveryService.isDeliverable(productsOrder)) {
-            List<Product> products = productsOrder.getProducts();
+    public void submitOrder(Order order) {
+        if (deliveryService.isDeliverable(order)) {
+            List<Product> products = order.getProducts();
             orderFulfilmentService.fulfilProducts(products);
         } else {
             throw new NotDeliverableOrderException();

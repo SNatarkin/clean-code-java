@@ -7,7 +7,7 @@ import com.epam.engx.cleancode.naming.thirdpartyjar.Message;
 import com.epam.engx.cleancode.naming.thirdpartyjar.NotificationManager;
 import com.epam.engx.cleancode.naming.thirdpartyjar.Order;
 
-public class CollectOrderService implements IOrderService {
+public class OrderServiceImpl implements IOrderService {
 
     private CollectionService collectionService;
     private NotificationManager notificationManager;
