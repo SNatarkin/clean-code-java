@@ -14,12 +14,12 @@ public class InterestCalculator implements Profitable {
     private static final double SENIOR_PERCENT = 5.5d;
     private static final int BONUS_AGE = 13;
     private static final int LEAP_YEAR_SHIFT = 1;
-    private static final int CORRECTION_YEAR = 1;
-    private static final int PERCENT = 100;
+    private static final int YEAR_FOR_CORRECTION = 1;
+    private static final int MAX_PERCENT = 100;
 
     public BigDecimal calculateInterest(AccountDetails accountDetails) {
         if (isAccountStartedAfterBonusAge(accountDetails)) {
-            return interest(accountDetails);
+            return getPercentForAge(accountDetails);
         } else {
             return BigDecimal.ZERO;
         }
@@ -30,29 +30,29 @@ public class InterestCalculator implements Profitable {
     }
 
     private int durationBetweenDatesInYears(Date from, Date to) {
-        Calendar startCalendar = new GregorianCalendar();
-        startCalendar.setTime(from);
-        Calendar endCalendar = new GregorianCalendar();
-        endCalendar.setTime(to);
-        int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
-        return getDifferentBetweenYearsWithCorrection(startCalendar, endCalendar, diffYear);
+        Calendar startData = new GregorianCalendar();
+        startData.setTime(from);
+        Calendar endDate = new GregorianCalendar();
+        endDate.setTime(to);
+        int differenceInYear = endDate.get(Calendar.YEAR) - startData.get(Calendar.YEAR);
+        return getDifferentBetweenYearsWithCorrection(startData, endDate, differenceInYear);
     }
 
-    private int getDifferentBetweenYearsWithCorrection(Calendar startCalendar, Calendar endCalendar, int diffYear) {
-        return getDifferenceInYear(startCalendar, endCalendar) ? diffYear - CORRECTION_YEAR : diffYear;
+    private int getDifferentBetweenYearsWithCorrection(Calendar startCalendar, Calendar endCalendar, int differenceInYear) {
+        return getDifferenceInYear(startCalendar, endCalendar) ? differenceInYear - YEAR_FOR_CORRECTION : differenceInYear;
     }
 
     private boolean getDifferenceInYear(Calendar startCalendar, Calendar endCalendar) {
         return endCalendar.get(Calendar.DAY_OF_YEAR) + LEAP_YEAR_SHIFT < startCalendar.get(Calendar.DAY_OF_YEAR);
     }
 
-    private BigDecimal interest(AccountDetails accountDetails) {
+    private BigDecimal getPercentForAge(AccountDetails accountDetails) {
         return (AGE <= accountDetails.getAge()) ? getInterest(accountDetails, SENIOR_PERCENT) : getInterest(accountDetails, INTEREST_PERCENT);
     }
 
     private BigDecimal getInterest(AccountDetails accountDetails, double interestPercent) {
         return BigDecimal.valueOf(accountDetails.getBalance().doubleValue()
-                * durationBetweenDatesInYears(accountDetails.getStartDate(), new Date()) * interestPercent / PERCENT);
+                * durationBetweenDatesInYears(accountDetails.getStartDate(), new Date()) * interestPercent / MAX_PERCENT);
     }
 }
 

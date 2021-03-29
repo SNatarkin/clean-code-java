@@ -3,11 +3,14 @@ package com.epam.engx.cleancode.dry;
 import com.epam.engx.cleancode.dry.thirdpartyjar.Account;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class AccountDetails implements Account {
     private Date birth;
-    private int age;
+
     private BigDecimal balance;
     private Date startDate;
 
@@ -39,11 +42,6 @@ public class AccountDetails implements Account {
     }
 
     public int getAge() {
-        return age;       // should depend on current time
+        return Period.between(getBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();    // should depend on current time
     }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
 }
