@@ -10,12 +10,11 @@ import java.util.GregorianCalendar;
 public class InterestCalculator implements Profitable {
 
     private static final int AGE = 60;
-    private static final double INTEREST_PERCENT = 4.5d;
-    private static final double SENIOR_PERCENT = 5.5d;
+    private static final double INTEREST_PERCENT = 4.5d / 100;
+    private static final double SENIOR_PERCENT = 5.5d/ 100;
     private static final int BONUS_AGE = 13;
     private static final int LEAP_YEAR_SHIFT = 1;
     private static final int YEAR_FOR_CORRECTION = 1;
-    private static final int MAX_PERCENT = 100;
 
     public BigDecimal calculateInterest(AccountDetails accountDetails) {
         if (isAccountStartedAfterBonusAge(accountDetails)) {
@@ -52,7 +51,7 @@ public class InterestCalculator implements Profitable {
 
     private BigDecimal getInterest(AccountDetails accountDetails, double interestPercent) {
         return BigDecimal.valueOf(accountDetails.getBalance().doubleValue()
-                * durationBetweenDatesInYears(accountDetails.getStartDate(), new Date()) * interestPercent / MAX_PERCENT);
+                * durationBetweenDatesInYears(accountDetails.getStartDate(), new Date()) * interestPercent);
     }
 }
 
