@@ -9,10 +9,8 @@ public class Order {
     private List<Product> products;
 
     public Double getPriceOfAvailableProducts() {
-        if (getProducts() == null) {
-            return 0.0;
-        }
-        return getProducts().stream().filter(Product::isAvailable).mapToDouble(Product::getProductPrice).sum();
+        return getProducts() == null ? 0.0 : getProducts().stream().filter(Product::isAvailable)
+                .mapToDouble(Product::getProductPrice).sum();
     }
 
     public List<Product> getProducts() {
