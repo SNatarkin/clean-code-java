@@ -10,15 +10,15 @@ import java.util.GregorianCalendar;
 public class InterestCalculator implements Profitable {
 
     private static final int AGE = 60;
-    private static final double INTEREST_PERCENT = 4.5d;
-    private static final double SENIOR_PERCENT = 5.5d;
+    private static final double INTEREST_PERCENT = 4.5d / 100;
+    private static final double SENIOR_PERCENT = 5.5d/ 100;
     private static final int BONUS_AGE = 13;
     private static final int LEAP_YEAR_SHIFT = 1;
-
+    private static final int YEAR_FOR_CORRECTION = 1;
 
     public BigDecimal calculateInterest(AccountDetails accountDetails) {
         if (isAccountStartedAfterBonusAge(accountDetails)) {
-            return interest(accountDetails);
+            return getPercentForAge(accountDetails);
         } else {
             return BigDecimal.ZERO;
         }
@@ -29,42 +29,29 @@ public class InterestCalculator implements Profitable {
     }
 
     private int durationBetweenDatesInYears(Date from, Date to) {
-        Calendar startCalendar = new GregorianCalendar();
-        startCalendar.setTime(from);
-        Calendar endCalendar = new GregorianCalendar();
-        endCalendar.setTime(to);
-
-        int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
-        if (endCalendar.get(Calendar.DAY_OF_YEAR) + LEAP_YEAR_SHIFT < startCalendar.get(Calendar.DAY_OF_YEAR))
-            return diffYear - 1;
-        return diffYear;
+        Calendar startData = new GregorianCalendar();
+        startData.setTime(from);
+        Calendar endDate = new GregorianCalendar();
+        endDate.setTime(to);
+        int differenceInYear = endDate.get(Calendar.YEAR) - startData.get(Calendar.YEAR);
+        return getDifferentBetweenYearsWithCorrection(startData, endDate, differenceInYear);
     }
 
-    private BigDecimal interest(AccountDetails accountDetails) {
-        double interest = 0;
-        if (isAccountStartedAfterBonusAge(accountDetails)) {
-            if (AGE <= accountDetails.getAge()) {
-                //interest = (PrincipalAmount * DurationInYears * AnnualInterestRate) / 100
-                interest = accountDetails.getBalance().doubleValue()
-                        * durationSinceStartDateInYears(accountDetails.getStartDate()) * SENIOR_PERCENT / 100;
-            } else {
-                interest = accountDetails.getBalance().doubleValue()
-                        * durationSinceStartDateInYears(accountDetails.getStartDate()) * INTEREST_PERCENT / 100;
-            }
-        }
-        return BigDecimal.valueOf(interest);
+    private int getDifferentBetweenYearsWithCorrection(Calendar startCalendar, Calendar endCalendar, int differenceInYear) {
+        return getDifferenceInYear(startCalendar, endCalendar) ? differenceInYear - YEAR_FOR_CORRECTION : differenceInYear;
     }
 
-    private int durationSinceStartDateInYears(Date startDate) {
-        Calendar startCalendar = new GregorianCalendar();
-        startCalendar.setTime(startDate);
-        Calendar endCalendar = new GregorianCalendar();
-        endCalendar.setTime(new Date());
+    private boolean getDifferenceInYear(Calendar startCalendar, Calendar endCalendar) {
+        return endCalendar.get(Calendar.DAY_OF_YEAR) + LEAP_YEAR_SHIFT < startCalendar.get(Calendar.DAY_OF_YEAR);
+    }
 
-        int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
-        if (endCalendar.get(Calendar.DAY_OF_YEAR) + LEAP_YEAR_SHIFT < startCalendar.get(Calendar.DAY_OF_YEAR))
-            return diffYear - 1;
-        return diffYear;
+    private BigDecimal getPercentForAge(AccountDetails accountDetails) {
+        return (AGE <= accountDetails.getAge()) ? getInterest(accountDetails, SENIOR_PERCENT) : getInterest(accountDetails, INTEREST_PERCENT);
+    }
 
+    private BigDecimal getInterest(AccountDetails accountDetails, double interestPercent) {
+        return BigDecimal.valueOf(accountDetails.getBalance().doubleValue()
+                * durationBetweenDatesInYears(accountDetails.getStartDate(), new Date()) * interestPercent);
     }
 }
+
